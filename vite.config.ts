@@ -11,6 +11,10 @@ async function createConfig() {
   const monacoFiles = await glob("monaco-editor/esm/vs/**/common/**/*.js", {
     cwd: path.resolve(__dirname, "../node_modules"),
   })
+
+  /** NOTE: Loading this via import yields an error, so we need to use await:
+   * ✘ [ERROR] "@codingame/monaco-vscode-rollup-vsix-plugin" resolved to an ESM file. ESM file cannot be loaded by `require`.
+   */
   const vsixPluginModule = await import(
     "@codingame/monaco-vscode-rollup-vsix-plugin"
   )
@@ -87,9 +91,13 @@ async function createConfig() {
       esbuildOptions: {
         plugins: [
           {
+            /** NOTE: Using previous implementation  -- using
+             * import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
+             * yields the same error as above:
+             * ✘ [ERROR] "@codingame/esbuild-import-meta-url-plugin" resolved to an ESM file. ESM file cannot be loaded by `require`. See http://vitejs.dev/guide/troubleshooting.html#this-package-is-esm-only for more details.
+             */
             name: "import.meta.url",
             setup({ onLoad }) {
-              // Help vite that bundles/move files in dev mode without touching `import.meta.url` which breaks asset urls
               onLoad({ filter: /.*\.js/, namespace: "file" }, async (args) => {
                 const code = fs.readFileSync(args.path, "utf8")
 
