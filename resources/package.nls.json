@@ -1,0 +1,5 @@
+{
+  "prompt-hello": "Prompt hello from remote extension",
+  "displayName": "Remote Extension",
+  "description": "This is a remote extension"
+}

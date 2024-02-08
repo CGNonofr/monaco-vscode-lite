@@ -1,0 +1,81 @@
+{
+  "name": "electron-vscode-monaco",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && electron-builder",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "python",
+        "extensions": [
+          ".py"
+        ],
+        "aliases": [
+          "Python",
+          "python"
+        ],
+        "configuration": "./node_modules/@codingame/monaco-vscode-python-default-extension/resources/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "python",
+        "scopeName": "source.python",
+        "path": "./node_modules/@codingame/monaco-vscode-python-default-extension/resources/MagicPython.tmLanguage.json"
+      }
+    ]
+  },
+  "dependencies": {
+    "@codingame/esbuild-import-meta-url-plugin": "^1.0.2",
+    "@codingame/monaco-vscode-ai-service-override": "^2.0.2",
+    "@codingame/monaco-vscode-base-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-configuration-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-editor-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-extension-gallery-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-extensions-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-files-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-ipynb-default-extension": "^2.0.3",
+    "@codingame/monaco-vscode-keybindings-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-language-detection-worker-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-languages-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-notebook-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-output-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-python-default-extension": "^2.0.3",
+    "@codingame/monaco-vscode-rollup-vsix-plugin": "^2.0.3",
+    "@codingame/monaco-vscode-textmate-service-override": "^2.0.3",
+    "@codingame/monaco-vscode-typescript-basics-default-extension": "^2.0.3",
+    "@codingame/monaco-vscode-typescript-language-features-default-extension": "^2.0.3",
+    "@codingame/monaco-vscode-views-service-override": "^2.0.3",
+    "@rollup/plugin-json": "^6.1.0",
+    "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@latest",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "sass": "^1.62.1",
+    "vite": "^4.4.9",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vscode": "npm:@codingame/monaco-vscode-api",
+    "vscode-uri": "^3.0.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.21",
+    "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "@vitejs/plugin-react": "^4.0.4",
+    "electron": "^26.1.0",
+    "electron-builder": "^24.6.4",
+    "eslint": "^8.48.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9",
+    "vite-plugin-electron": "^0.14.0",
+    "vite-plugin-electron-renderer": "^0.14.5"
+  },
+  "main": "dist-electron/main.js"
+}

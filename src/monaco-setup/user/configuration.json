@@ -1,0 +1,23 @@
+{
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.iconTheme": "vs-seti",
+  "editor.autoClosingBrackets": "languageDefined",
+  "editor.autoClosingQuotes": "languageDefined",
+  "editor.scrollBeyondLastLine": true,
+  "editor.mouseWheelZoom": true,
+  "editor.wordBasedSuggestions": "off",
+  "editor.acceptSuggestionOnEnter": "on",
+  "editor.foldingHighlight": false,
+  "editor.semanticHighlighting.enabled": true,
+  "editor.bracketPairColorization.enabled": false,
+  "editor.fontSize": 12,
+  "audioCues.lineHasError": "on",
+  "audioCues.onDebugBreak": "on",
+  "files.autoSave": "off",
+  "debug.toolBarLocation": "docked",
+  "editor.experimental.asyncTokenization": true,
+  "terminal.integrated.tabs.title": "${sequence}",
+  "typescript.tsserver.log": "normal",
+  "workbench.sideBar.location": "left",
+  "extensions.autoUpdate": true
+}
