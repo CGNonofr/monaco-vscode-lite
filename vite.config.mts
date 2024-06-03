@@ -1,26 +1,20 @@
 import json from "@rollup/plugin-json"
 import react from "@vitejs/plugin-react"
-import fs from "fs"
 
 import glob from "fast-glob"
-import path, { resolve } from "path"
+import path from "path"
 import electron from "vite-plugin-electron/simple"
 import viteTsConfigs from "vite-tsconfig-paths"
+import { defineConfig } from 'vite'
+import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
+import vsixPlugin from '@codingame/monaco-vscode-rollup-vsix-plugin'
 
 async function createConfig() {
-  const monacoFiles = await glob("monaco-editor/esm/vs/**/common/**/*.js", {
+  const monacoFiles = await glob("vscode/**/*.js", {
     cwd: path.resolve(__dirname, "../node_modules"),
   })
 
-  /** NOTE: Loading this via import yields an error, so we need to use await:
-   * ✘ [ERROR] "@codingame/monaco-vscode-rollup-vsix-plugin" resolved to an ESM file. ESM file cannot be loaded by `require`.
-   */
-  const vsixPluginModule = await import(
-    "@codingame/monaco-vscode-rollup-vsix-plugin"
-  )
-  const vsixPlugin = vsixPluginModule.default
-
-  return {
+  return defineConfig({
     build: {
       outDir: "build",
       lib: {
@@ -89,47 +83,10 @@ async function createConfig() {
         ...monacoFiles,
       ],
       esbuildOptions: {
-        plugins: [
-          {
-            /** NOTE: Using previous implementation  -- using
-             * import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
-             * yields the same error as above:
-             * ✘ [ERROR] "@codingame/esbuild-import-meta-url-plugin" resolved to an ESM file. ESM file cannot be loaded by `require`. See http://vitejs.dev/guide/troubleshooting.html#this-package-is-esm-only for more details.
-             */
-            name: "import.meta.url",
-            setup({ onLoad }) {
-              onLoad({ filter: /.*\.js/, namespace: "file" }, async (args) => {
-                const code = fs.readFileSync(args.path, "utf8")
-
-                const assetImportMetaUrlRE =
-                  /\bnew\s+URL\s*\(\s*('[^']+'|"[^"]+"|`[^`]+`)\s*,\s*import\.meta\.url\s*(?:,\s*)?\)/g
-                let i = 0
-                let newCode = ""
-                for (
-                  let match = assetImportMetaUrlRE.exec(code);
-                  match != null;
-                  match = assetImportMetaUrlRE.exec(code)
-                ) {
-                  newCode += code.slice(i, match.index)
-                  const path = match[1].slice(1, -1)
-                  const resolved = resolve(__dirname, path) // Use node's path.resolve with __dirname
-
-                  newCode += `new URL(${JSON.stringify(
-                    resolved
-                  )}, import.meta.url)` // Use the resolved path
-
-                  i = assetImportMetaUrlRE.lastIndex
-                }
-                newCode += code.slice(i)
-
-                return { contents: newCode }
-              })
-            },
-          },
-        ],
+        plugins: [importMetaUrlPlugin],
       },
     },
-  }
+  })
 }
 
 export default createConfig()
