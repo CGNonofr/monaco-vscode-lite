@@ -5,17 +5,20 @@ import {
 
 import defaultConfiguration from "./user/configuration.json?raw"
 
-import getAiServiceOverride from "@codingame/monaco-vscode-ai-service-override"
 import getConfigurationServiceOverride, {
-  updateUserConfiguration,
+  initUserConfiguration,
 } from "@codingame/monaco-vscode-configuration-service-override"
-import getExtensionGalleryServiceOverride from "@codingame/monaco-vscode-extension-gallery-service-override"
 import getLanguagesServiceOverride from "@codingame/monaco-vscode-languages-service-override"
+import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-service-override'
+import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-override'
+import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override'
 import "vscode/localExtensionHost"
 
 import "@codingame/monaco-vscode-ipynb-default-extension"
 import "@codingame/monaco-vscode-typescript-basics-default-extension"
 import "@codingame/monaco-vscode-typescript-language-features-default-extension"
+import "@codingame/monaco-vscode-theme-defaults-default-extension"
+import "@codingame/monaco-vscode-python-default-extension"
 
 import * as monaco from "monaco-editor"
 
@@ -25,12 +28,15 @@ const workspaceFile = monaco.Uri.file(
   "/tmp/ide-monaco-editor/ide-monaco-editor.py"
 )
 
+await initUserConfiguration(defaultConfiguration)
+
 await initializeMonacoService(
   {
-    ...getAiServiceOverride(),
-    ...getExtensionGalleryServiceOverride({ webOnly: false }),
     ...getLanguagesServiceOverride(),
     ...getConfigurationServiceOverride(),
+    ...getTextmateServiceOverride(),
+    ...getThemeServiceOverride(),
+    ...getModelServiceOverride()
   },
   document.body,
   {
@@ -55,17 +61,11 @@ await initializeMonacoService(
 const workerLoaders: Partial<Record<string, WorkerLoader>> = {
   editorWorkerService: () =>
     new Worker(
-      new URL("vscode/vscode/src/vs/editor/editor.worker.js", import.meta.url),
+      new URL("monaco-editor/esm/vs/editor/editor.worker.js", import.meta.url),
       { type: "module" }
     ),
-  languageDetectionWorkerService: () =>
-    new Worker(
-      new URL(
-        "@codingame/monaco-vscode-language-detection-worker-service-override/worker",
-        import.meta.url
-      ),
-      { type: "module" }
-    ),
+  textMateWorker: () => new Worker(new URL('@codingame/monaco-vscode-textmate-service-override/worker', import.meta.url), { type: 'module' }),
+
 }
 
 window.MonacoEnvironment = {
@@ -77,5 +77,3 @@ window.MonacoEnvironment = {
     throw new Error(`Unimplemented worker ${label} (${moduleId})`)
   },
 }
-
-await updateUserConfiguration(defaultConfiguration)
