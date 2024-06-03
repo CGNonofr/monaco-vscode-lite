@@ -8,28 +8,6 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
-  "contributes": {
-    "languages": [
-      {
-        "id": "python",
-        "extensions": [
-          ".py"
-        ],
-        "aliases": [
-          "Python",
-          "python"
-        ],
-        "configuration": "./node_modules/@codingame/monaco-vscode-python-default-extension/resources/language-configuration.json"
-      }
-    ],
-    "grammars": [
-      {
-        "language": "python",
-        "scopeName": "source.python",
-        "path": "./node_modules/@codingame/monaco-vscode-python-default-extension/resources/MagicPython.tmLanguage.json"
-      }
-    ]
-  },
   "dependencies": {
     "@codingame/esbuild-import-meta-url-plugin": "^1.0.2",
     "@codingame/monaco-vscode-ai-service-override": "^2.0.2",
