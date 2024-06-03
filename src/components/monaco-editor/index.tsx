@@ -1,9 +1,8 @@
 import * as monaco from "monaco-editor"
 
 import { useLayoutEffect, useRef } from "react"
-import "vscode/localExtensionHost"
 
-import { IReference, ITextFileEditorModel } from "monaco-editor/monaco"
+import { IReference, ITextFileEditorModel, createModelReference } from "vscode/monaco"
 
 const modelUri = monaco.Uri.file("inmemory://model.py")
 const samplePythonCode = `print("Hello, World!")`
@@ -16,11 +15,7 @@ export const MonacoEditorComponent = () => {
   useLayoutEffect(() => {
     const startEditor = async () => {
       if (containerRef.current && !editorRef.current) {
-        if (!monaco.editor.getModel(modelUri)) {
-          monaco.editor.createModel(samplePythonCode, "python", modelUri)
-        }
-
-        modelRef.current = await monaco.editor.createModelReference(
+        modelRef.current = await createModelReference(
           modelUri,
           samplePythonCode
         )
@@ -43,29 +38,15 @@ export const MonacoEditorComponent = () => {
           value: samplePythonCode,
         })
 
-        editorRef.current.setValue(samplePythonCode)
+        await modelRef.current?.object.save()
 
-        if (editorRef.current) {
-          monaco.editor.setModelLanguage(
-            editorRef.current.getModel()!,
-            "python"
-          )
-        }
-
-        if (typeof modelRef.current?.object.save === "function") {
-          await modelRef.current?.object.save()
-        } else {
-          console.error("modelRef.current?.object.save is not a function")
-        }
-
-        console.log("Languages", monaco.languages.getLanguages())
+        console.log("Languages", monaco.languages.getLanguages(), modelRef.current?.object.textEditorModel?.getLanguageId())
       }
     }
     startEditor()
 
     return () => {
       modelRef.current?.dispose()
-      editorRef.current?.getModel()?.dispose()
       editorRef.current?.dispose()
     }
   }, [])
